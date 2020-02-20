@@ -1,0 +1,8 @@
+# name: Sort interface template
+# key: tsort
+# --
+type $1 []$2
+
+func ($3 $1) Len() int { return len($3) }
+func ($3 $1) Less(i, j int) bool { return $3[i] < $3[j] }
+func ($3 $1) Swap(i, j int) { $3[i], $3[j] = $3[j], $3[i] }

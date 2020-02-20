@@ -1,0 +1,38 @@
+# name: Minimum Queue
+# key: minq
+# --
+
+type ${1:Job} struct {
+    value    ${2:string}
+    priority int
+	index    int
+}
+
+// Create a ${3:PriorityQueue} of $1, sorted by minimum priority.
+type $3 []*$1
+
+func (pq $3) Len() int { return len(pq) }
+func (pq $3) Less(i, j int) bool { return pq[i].priority < pq[j].priority }
+
+func (pq $3) Swap(i, j int) {
+    pq[i], pq[j] = pq[j], pq[i]
+	pq[i].index = i
+	pq[j].index = j
+}
+
+func (pq *$3) Push(x interface{}) {
+	n := len(*pq)
+	item := x.(*$1)
+	item.index = n
+	*pq = append(*pq, item)
+}
+
+func (pq *$3) Pop() interface{} {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	old[n-1] = nil  // avoid memory leak
+	item.index = -1 // for safety
+	*pq = old[0 : n-1]
+	return item
+}
