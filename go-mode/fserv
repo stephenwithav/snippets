@@ -1,0 +1,5 @@
+# name: FileServer
+# key: fserv
+# --
+
+http.FileServer(http.Dir($0))

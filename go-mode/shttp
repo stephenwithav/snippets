@@ -1,0 +1,9 @@
+# name: ServeHTTP
+# key: shttp
+# --
+
+type ${1:Handler} struct{$2}
+
+func (h $1Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    $0
+}

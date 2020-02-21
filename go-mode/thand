@@ -1,0 +1,5 @@
+# name: TimeoutHandler
+# key: thand
+# --
+
+http.TimeoutHandler($1, $2 * time.Second, $3)
