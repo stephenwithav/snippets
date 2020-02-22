@@ -1,0 +1,9 @@
+# name: io.Reader
+# key: ior
+# --
+
+func ($1) Read(p []byte) (int, error) {
+    $0
+
+    return 0, nil
+}

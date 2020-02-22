@@ -1,0 +1,9 @@
+# name: io.Closer interface template
+# key: ioc
+# --
+
+func ($1) Close() error {
+    $0
+
+	return nil
+}

@@ -1,0 +1,8 @@
+# name: fmt.GoStringer
+# key: gostr
+# --
+
+// GoString replaces %#v in fmt.*f calls with a custom string.
+func ($1) GoString() string {
+    $0
+}

@@ -1,0 +1,21 @@
+# name: io.ReadWriteCloser
+# key: iorwc
+# --
+
+func ($1) Read(p []byte) (int, error) {
+    $2
+
+    return 0, nil
+}
+
+func ($1) Write(data []byte) (int, error) {
+    $3
+
+    return 0, nil
+}
+
+func ($1) Close() error {
+    $4
+
+    return nil
+}

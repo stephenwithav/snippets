@@ -1,0 +1,9 @@
+# name: io.Writer
+# key: iow
+# --
+
+func ($1) Write(data []byte) (int, error) {
+    $2
+
+    return 0, nil
+}
