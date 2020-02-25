@@ -1,0 +1,638 @@
+# name: Red-Black Tree
+# key: ds/rbtree
+# --
+
+type color bool
+
+const (
+    black, red color = true, false
+)
+
+// Tree holds elements of the red-black tree
+type ${1:Tree} struct {
+	Root       *$1Node
+	size       int
+}
+
+// Node is a single element within the tree
+type $1Node struct {
+	Key    ${2:int}
+	Value  ${3:string}
+	color  color
+	Left   *$1Node
+	Right  *$1Node
+	Parent *$1Node
+}
+
+// Put inserts node into the tree.
+// Key should be comparable with <, >, or ==.
+// If not, tweak the case statements.
+func (tree *$1) Put(key $2, value $3) {
+	var insertedNode *$1Node
+	if tree.Root == nil {
+		// Assert key is of comparator's type for initial tree
+		tree.Root = &$1Node{Key: key, Value: value, color: red}
+		insertedNode = tree.Root
+	} else {
+		node := tree.Root
+		loop := true
+		for loop {
+			switch {
+			case key == node.Key:
+				node.Key = key
+				node.Value = value
+				return
+			case key < node.Key:
+				if node.Left == nil {
+					node.Left = &$1Node{Key: key, Value: value, color: red}
+					insertedNode = node.Left
+					loop = false
+				} else {
+					node = node.Left
+				}
+			default: // key > node.Key
+				if node.Right == nil {
+					node.Right = &$1Node{Key: key, Value: value, color: red}
+					insertedNode = node.Right
+					loop = false
+				} else {
+					node = node.Right
+				}
+			}
+		}
+		insertedNode.Parent = node
+	}
+	tree.insertCase1(insertedNode)
+	tree.size++
+}
+
+// Get searches the node in the tree by key and returns its value or nil if key is not found in tree.
+// Second return parameter is true if key was found, otherwise false.
+// Key should be comparable with <, >, or ==.
+// If not, tweak the case statements.
+func (tree *$1) Get(key $2) (value $3, found bool) {
+	node := tree.lookup(key)
+	if node != nil {
+		return node.Value, true
+	}
+	return ${4:""}, false
+}
+
+// Remove remove the node from the tree by key.
+// Key should be comparable with <, >, or ==.
+// If not, tweak the case statements.
+func (tree *$1) Remove(key $2) {
+	var child *$1Node
+	node := tree.lookup(key)
+	if node == nil {
+		return
+	}
+	if node.Left != nil && node.Right != nil {
+		pred := node.Left.maximumNode()
+		node.Key = pred.Key
+		node.Value = pred.Value
+		node = pred
+	}
+	if node.Left == nil || node.Right == nil {
+		if node.Right == nil {
+			child = node.Left
+		} else {
+			child = node.Right
+		}
+		if node.color == black {
+			node.color = nodeColor(child)
+			tree.deleteCase1(node)
+		}
+		tree.replaceNode(node, child)
+		if node.Parent == nil && child != nil {
+			child.color = black
+		}
+	}
+	tree.size--
+}
+
+// Empty returns true if tree does not contain any nodes
+func (tree *$1) Empty() bool {
+	return tree.size == 0
+}
+
+// Size returns number of nodes in the tree.
+func (tree *$1) Size() int {
+	return tree.size
+}
+
+// Keys returns all keys in-order
+func (tree *$1) Keys() []$2 {
+	keys := make([]$2, tree.size)
+	it := tree.Iterator()
+	for i := 0; it.Next(); i++ {
+		keys[i] = it.Key()
+	}
+	return keys
+}
+
+// Values returns all values in-order based on the key.
+func (tree *$1) Values() []$3 {
+	values := make([]$3, tree.size)
+	it := tree.Iterator()
+	for i := 0; it.Next(); i++ {
+		values[i] = it.Value()
+	}
+	return values
+}
+
+// Left returns the left-most (min) node or nil if tree is empty.
+func (tree *$1) Left() *$1Node {
+	var parent *$1Node
+	current := tree.Root
+	for current != nil {
+		parent = current
+		current = current.Left
+	}
+	return parent
+}
+
+// Right returns the right-most (max) node or nil if tree is empty.
+func (tree *$1) Right() *$1Node {
+	var parent *$1Node
+	current := tree.Root
+	for current != nil {
+		parent = current
+		current = current.Right
+	}
+	return parent
+}
+
+// Floor Finds floor node of the input key, return the floor node or nil if no floor is found.
+// Second return parameter is true if floor was found, otherwise false.
+//
+// Floor node is defined as the largest node that is smaller than or equal to the given node.
+// A floor node may not be found, either because the tree is empty, or because
+// all nodes in the tree are larger than the given node.
+//
+// Key should be comparable with <, >, or ==.
+// If not, tweak the case statements.
+func (tree *$1) Floor(key $2) (floor *$1Node, found bool) {
+	found = false
+	node := tree.Root
+	for node != nil {
+		switch {
+		case key == node.Key:
+			return node, true
+		case key < node.Key:
+			node = node.Left
+		default:
+			floor, found = node, true
+			node = node.Right
+		}
+	}
+	if found {
+		return floor, true
+	}
+	return nil, false
+}
+
+// Ceiling finds ceiling node of the input key, return the ceiling node or nil if no ceiling is found.
+// Second return parameter is true if ceiling was found, otherwise false.
+//
+// Ceiling node is defined as the smallest node that is larger than or equal to the given node.
+// A ceiling node may not be found, either because the tree is empty, or because
+// all nodes in the tree are smaller than the given node.
+//
+// Key should be comparable with <, >, or ==.
+// If not, tweak the case statements.
+func (tree *$1) Ceiling(key $2) (ceiling *$1Node, found bool) {
+	found = false
+	node := tree.Root
+	for node != nil {
+		switch {
+		case key == node.Key:
+			return node, true
+		case key < node.Key:
+			ceiling, found = node, true
+			node = node.Left
+		default:
+			node = node.Right
+		}
+	}
+	if found {
+		return ceiling, true
+	}
+	return nil, false
+}
+
+// Clear removes all nodes from the tree.
+func (tree *$1) Clear() {
+	tree.Root = nil
+	tree.size = 0
+}
+
+// String returns a string representation of container
+func (tree *$1) String() string {
+	str := "RedBlackTree\n"
+	if !tree.Empty() {
+		output(tree.Root, "", true, &str)
+	}
+	return str
+}
+
+func (node *$1Node) String() string {
+	return fmt.Sprintf("%v", node.Key)
+}
+
+func output(node *$1Node, prefix string, isTail bool, str *string) {
+	if node.Right != nil {
+		newPrefix := prefix
+		if isTail {
+			newPrefix += "│   "
+		} else {
+			newPrefix += "    "
+		}
+		output(node.Right, newPrefix, false, str)
+	}
+	*str += prefix
+	if isTail {
+		*str += "└── "
+	} else {
+		*str += "┌── "
+	}
+	*str += node.String() + "\n"
+	if node.Left != nil {
+		newPrefix := prefix
+		if isTail {
+			newPrefix += "    "
+		} else {
+			newPrefix += "│   "
+		}
+		output(node.Left, newPrefix, true, str)
+	}
+}
+
+func (tree *$1) lookup(key $2) *$1Node {
+	node := tree.Root
+	for node != nil {
+		switch {
+		case key == node.Key:
+			return node
+		case key < node.Key:
+			node = node.Left
+		default:
+			node = node.Right
+		}
+	}
+	return nil
+}
+
+func (node *$1Node) grandparent() *$1Node {
+	if node != nil && node.Parent != nil {
+		return node.Parent.Parent
+	}
+	return nil
+}
+
+func (node *$1Node) uncle() *$1Node {
+	if node == nil || node.Parent == nil || node.Parent.Parent == nil {
+		return nil
+	}
+	return node.Parent.sibling()
+}
+
+func (node *$1Node) sibling() *$1Node {
+	if node == nil || node.Parent == nil {
+		return nil
+	}
+	if node == node.Parent.Left {
+		return node.Parent.Right
+	}
+	return node.Parent.Left
+}
+
+func (tree *$1) rotateLeft(node *$1Node) {
+	right := node.Right
+	tree.replaceNode(node, right)
+	node.Right = right.Left
+	if right.Left != nil {
+		right.Left.Parent = node
+	}
+	right.Left = node
+	node.Parent = right
+}
+
+func (tree *$1) rotateRight(node *Node) {
+	left := node.Left
+	tree.replaceNode(node, left)
+	node.Left = left.Right
+	if left.Right != nil {
+		left.Right.Parent = node
+	}
+	left.Right = node
+	node.Parent = left
+}
+
+func (tree *$1) replaceNode(old *$1Node, new *$1Node) {
+	if old.Parent == nil {
+		tree.Root = new
+	} else {
+		if old == old.Parent.Left {
+			old.Parent.Left = new
+		} else {
+			old.Parent.Right = new
+		}
+	}
+	if new != nil {
+		new.Parent = old.Parent
+	}
+}
+
+func (tree *$1) insertCase1(node *$1Node) {
+	if node.Parent == nil {
+		node.color = black
+	} else {
+		tree.insertCase2(node)
+	}
+}
+
+func (tree *$1) insertCase2(node *$1Node) {
+	if nodeColor(node.Parent) == black {
+		return
+	}
+	tree.insertCase3(node)
+}
+
+func (tree *$1) insertCase3(node *$1Node) {
+	uncle := node.uncle()
+	if nodeColor(uncle) == red {
+		node.Parent.color = black
+		uncle.color = black
+		node.grandparent().color = red
+		tree.insertCase1(node.grandparent())
+	} else {
+		tree.insertCase4(node)
+	}
+}
+
+func (tree *$1) insertCase4(node *$1Node) {
+	grandparent := node.grandparent()
+	if node == node.Parent.Right && node.Parent == grandparent.Left {
+		tree.rotateLeft(node.Parent)
+		node = node.Left
+	} else if node == node.Parent.Left && node.Parent == grandparent.Right {
+		tree.rotateRight(node.Parent)
+		node = node.Right
+	}
+	tree.insertCase5(node)
+}
+
+func (tree *$1) insertCase5(node *$1Node) {
+	node.Parent.color = black
+	grandparent := node.grandparent()
+	grandparent.color = red
+	if node == node.Parent.Left && node.Parent == grandparent.Left {
+		tree.rotateRight(grandparent)
+	} else if node == node.Parent.Right && node.Parent == grandparent.Right {
+		tree.rotateLeft(grandparent)
+	}
+}
+
+func (node *$1Node) maximumNode() *$1Node {
+	if node == nil {
+		return nil
+	}
+	for node.Right != nil {
+		node = node.Right
+	}
+	return node
+}
+
+func (tree *$1) deleteCase1(node *$1Node) {
+	if node.Parent == nil {
+		return
+	}
+	tree.deleteCase2(node)
+}
+
+func (tree *$1) deleteCase2(node *$1Node) {
+	sibling := node.sibling()
+	if nodeColor(sibling) == red {
+		node.Parent.color = red
+		sibling.color = black
+		if node == node.Parent.Left {
+			tree.rotateLeft(node.Parent)
+		} else {
+			tree.rotateRight(node.Parent)
+		}
+	}
+	tree.deleteCase3(node)
+}
+
+func (tree *$1) deleteCase3(node *$1Node) {
+	sibling := node.sibling()
+	if nodeColor(node.Parent) == black &&
+		nodeColor(sibling) == black &&
+		nodeColor(sibling.Left) == black &&
+		nodeColor(sibling.Right) == black {
+		sibling.color = red
+		tree.deleteCase1(node.Parent)
+	} else {
+		tree.deleteCase4(node)
+	}
+}
+
+func (tree *$1) deleteCase4(node *$1Node) {
+	sibling := node.sibling()
+	if nodeColor(node.Parent) == red &&
+		nodeColor(sibling) == black &&
+		nodeColor(sibling.Left) == black &&
+		nodeColor(sibling.Right) == black {
+		sibling.color = red
+		node.Parent.color = black
+	} else {
+		tree.deleteCase5(node)
+	}
+}
+
+func (tree *$1) deleteCase5(node *$1Node) {
+	sibling := node.sibling()
+	if node == node.Parent.Left &&
+		nodeColor(sibling) == black &&
+		nodeColor(sibling.Left) == red &&
+		nodeColor(sibling.Right) == black {
+		sibling.color = red
+		sibling.Left.color = black
+		tree.rotateRight(sibling)
+	} else if node == node.Parent.Right &&
+		nodeColor(sibling) == black &&
+		nodeColor(sibling.Right) == red &&
+		nodeColor(sibling.Left) == black {
+		sibling.color = red
+		sibling.Right.color = black
+		tree.rotateLeft(sibling)
+	}
+	tree.deleteCase6(node)
+}
+
+func (tree *$1) deleteCase6(node *$1Node) {
+	sibling := node.sibling()
+	sibling.color = nodeColor(node.Parent)
+	node.Parent.color = black
+	if node == node.Parent.Left && nodeColor(sibling.Right) == red {
+		sibling.Right.color = black
+		tree.rotateLeft(node.Parent)
+	} else if nodeColor(sibling.Left) == red {
+		sibling.Left.color = black
+		tree.rotateRight(node.Parent)
+	}
+}
+
+func nodeColor(node *$1Node) color {
+	if node == nil {
+		return black
+	}
+	return node.color
+}
+
+
+// Iterator holding the iterator's state
+type $1Iterator struct {
+	tree     *$1
+	node     *$1Node
+	position position
+}
+
+type position byte
+
+const (
+	begin, between, end position = 0, 1, 2
+)
+
+// Iterator returns a stateful iterator whose elements are key/value pairs.
+func (tree *$1) Iterator() $1Iterator {
+	return $1Iterator{tree: tree, node: nil, position: begin}
+}
+
+// Next moves the iterator to the next element and returns true if there was a next element in the container.
+// If Next() returns true, then next element's key and value can be retrieved by Key() and Value().
+// If Next() was called for the first time, then it will point the iterator to the first element if it exists.
+// Modifies the state of the iterator.
+func (iterator *$1Iterator) Next() bool {
+	if iterator.position == end {
+		goto end
+	}
+	if iterator.position == begin {
+		left := iterator.tree.Left()
+		if left == nil {
+			goto end
+		}
+		iterator.node = left
+		goto between
+	}
+	if iterator.node.Right != nil {
+		iterator.node = iterator.node.Right
+		for iterator.node.Left != nil {
+			iterator.node = iterator.node.Left
+		}
+		goto between
+	}
+	if iterator.node.Parent != nil {
+		node := iterator.node
+		for iterator.node.Parent != nil {
+			iterator.node = iterator.node.Parent
+			if node.Key <= iterator.node.Key {
+				goto between
+			}
+		}
+	}
+
+end:
+	iterator.node = nil
+	iterator.position = end
+	return false
+
+between:
+	iterator.position = between
+	return true
+}
+
+// Prev moves the iterator to the previous element and returns true if there was a previous element in the container.
+// If Prev() returns true, then previous element's key and value can be retrieved by Key() and Value().
+// Modifies the state of the iterator.
+func (iterator *$1Iterator) Prev() bool {
+	if iterator.position == begin {
+		goto begin
+	}
+	if iterator.position == end {
+		right := iterator.tree.Right()
+		if right == nil {
+			goto begin
+		}
+		iterator.node = right
+		goto between
+	}
+	if iterator.node.Left != nil {
+		iterator.node = iterator.node.Left
+		for iterator.node.Right != nil {
+			iterator.node = iterator.node.Right
+		}
+		goto between
+	}
+	if iterator.node.Parent != nil {
+		node := iterator.node
+		for iterator.node.Parent != nil {
+			iterator.node = iterator.node.Parent
+			if node.Key >= iterator.node.Key {
+				goto between
+			}
+		}
+	}
+
+begin:
+	iterator.node = nil
+	iterator.position = begin
+	return false
+
+between:
+	iterator.position = between
+	return true
+}
+
+// Value returns the current element's value.
+// Does not modify the state of the iterator.
+func (iterator *$1Iterator) Value() $3 {
+	return iterator.node.Value
+}
+
+// Key returns the current element's key.
+// Does not modify the state of the iterator.
+func (iterator *$1Iterator) Key() $2 {
+	return iterator.node.Key
+}
+
+// Begin resets the iterator to its initial state (one-before-first)
+// Call Next() to fetch the first element if any.
+func (iterator *$1Iterator) Begin() {
+	iterator.node = nil
+	iterator.position = begin
+}
+
+// End moves the iterator past the last element (one-past-the-end).
+// Call Prev() to fetch the last element if any.
+func (iterator *$1Iterator) End() {
+	iterator.node = nil
+	iterator.position = end
+}
+
+// First moves the iterator to the first element and returns true if there was a first element in the container.
+// If First() returns true, then first element's key and value can be retrieved by Key() and Value().
+// Modifies the state of the iterator
+func (iterator *$1Iterator) First() bool {
+	iterator.Begin()
+	return iterator.Next()
+}
+
+// Last moves the iterator to the last element and returns true if there was a last element in the container.
+// If Last() returns true, then last element's key and value can be retrieved by Key() and Value().
+// Modifies the state of the iterator.
+func (iterator *$1Iterator) Last() bool {
+	iterator.End()
+	return iterator.Prev()
+}
