@@ -318,7 +318,7 @@ func (tree *$1) rotateLeft(node *$1Node) {
 	node.Parent = right
 }
 
-func (tree *$1) rotateRight(node *Node) {
+func (tree *$1) rotateRight(node *$1Node) {
 	left := node.Left
 	tree.replaceNode(node, left)
 	node.Left = left.Right
