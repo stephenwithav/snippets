@@ -20,6 +20,7 @@ func (pq $3) Swap(i, j int) {
 	pq[j].index = j
 }
 
+// heap.Push(pq, &$1{}) to add.
 func (pq *$3) Push(x interface{}) {
 	n := len(*pq)
 	item := x.(*$1)
@@ -27,6 +28,9 @@ func (pq *$3) Push(x interface{}) {
 	*pq = append(*pq, item)
 }
 
+// heap.Pop(pq) to retrieve the next $1.
+// Don't forget to cast the returned item.
+// e.g.., latest.(*$1)
 func (pq *$3) Pop() interface{} {
 	old := *pq
 	n := len(old)
