@@ -1,0 +1,7 @@
+# name: Test template
+# key: tstf
+# --
+
+func Test${1:NameHere}(t *testing.T) {
+    $0
+}
