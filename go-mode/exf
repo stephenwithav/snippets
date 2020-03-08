@@ -1,0 +1,7 @@
+# name: Example template
+# key: exf
+# --
+
+func Example${1:NameHere}() {
+    $0
+}

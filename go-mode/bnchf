@@ -1,0 +1,7 @@
+# name: Benchmark template
+# key: bnchf
+# --
+
+func Benchmark${1:NameHere}(b *testing.B) {
+    $0
+}
