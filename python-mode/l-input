@@ -1,0 +1,5 @@
+# name: TF Input layer
+# key: l/inp
+# --
+
+layer.InputLayer(input_shape=($1), name='$2')(${3:x})

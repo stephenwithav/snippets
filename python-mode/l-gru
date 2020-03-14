@@ -1,0 +1,5 @@
+# name: TF GRU Layer
+# key: l/gru
+# --
+
+layer.GRU(${1:Output units}, activation='${2:tanh}', recurrent_activation='${3:sigmoid}')(${4:x})

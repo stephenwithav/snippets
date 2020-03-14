@@ -1,0 +1,5 @@
+# name: TF Max Pooling Layer
+# key: l/maxp
+# --
+
+layer.MaxPooling${1:2}D(pool_size=($2), strides=${3:None}, padding='${4:valid}')(${5:x})

@@ -1,0 +1,5 @@
+# name: TF Global Average Pooling Layer
+# key: l/gavgp
+# --
+
+layer.GlobalAveragePooling${1:2}D(data_format='${2:channels_last}')(${3:x})
