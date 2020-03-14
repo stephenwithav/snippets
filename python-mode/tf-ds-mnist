@@ -1,0 +1,5 @@
+# name: Import mnist dataset
+# key: tf/ds/mnist
+# --
+
+from tensorflow.keras.datasets import mnist

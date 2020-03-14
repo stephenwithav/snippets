@@ -1,0 +1,8 @@
+# name: Default TensorFlow imports
+# key: tf/imp
+# --
+
+from tensorflow.keras import layers
+from tensorflow.keras import optimizers
+from tensorflow.keras.models import Model
+from tensorflow.keras.models import load_model
