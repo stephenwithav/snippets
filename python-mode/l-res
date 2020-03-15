@@ -1,0 +1,5 @@
+# name: TF Reshape layer
+# key: l/res
+# --
+
+layers.Reshape(target_shape=($1))(${2:x})
