@@ -2,4 +2,4 @@
 # key: l/inp
 # --
 
-layer.InputLayer(input_shape=($1), name='$2')(${3:x})
+layers.Input(shape=($1), name='$2')

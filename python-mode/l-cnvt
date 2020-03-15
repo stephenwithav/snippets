@@ -1,5 +1,5 @@
 # name: TF Transposed Convolutional layer
-# key: l/cnvt
+# key: l/tcnv
 # --
 
-layer.Conv${1:2}DTranspose(${2:Output filters}, (${3:Kernel size}), padding='${4:valid}', activation='${5:relu}')(${6:x})
+layers.Conv${1:2}DTranspose(${2:Output filters}, (${3:Kernel size}), padding='${4:valid}', activation='${5:relu}')(${6:x})

@@ -2,4 +2,4 @@
 # key: l/avgp
 # --
 
-layer.AveragePooling${1:2}D(pool_size=($2), strides=${3:None}, padding='${4:valid}')(${5:x})
+layers.AveragePooling${1:2}D(pool_size=($2), strides=${3:None}, padding='${4:valid}')(${5:x})

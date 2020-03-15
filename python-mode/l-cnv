@@ -2,4 +2,4 @@
 # key: l/cnv
 # --
 
-layer.Conv${1:2}D(${2:Output filters}, (${3:Kernel size}), padding='${4:valid}', activation='${5:relu}')(${6:x})
+layers.Conv${1:2}D(${2:Output filters}, (${3:Kernel size}), padding='${4:valid}', activation='${5:relu}')(${6:x})
