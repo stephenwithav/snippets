@@ -1,0 +1,5 @@
+# name: TF Dense layer
+# key: l/d
+# --
+
+layers.Dense(units=$1, activation='$2')(${3:x})
