@@ -1,0 +1,5 @@
+# name: TF Flatten
+# key: l/f
+# --
+
+layers.Flatten()(${1:x})
