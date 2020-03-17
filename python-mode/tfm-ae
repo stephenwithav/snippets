@@ -1,0 +1,54 @@
+# name: TF Autoencoder model outline
+# key: tfm/ae
+# --
+
+def ${1:create_autoencoder}(width,
+        height,
+        channels,
+        units=16,
+        filters=[32, 64],
+        kernels=[3, 3],
+        strides=[2, 2]):
+    """An autoencoder model.
+
+    Arguments:
+        width: Integer, the image width.
+        height: Integer, the image height.
+        channels: Integer, the color depth in bytes.
+        units: Integer, the final number of features to learn in the
+            latent representation.  Too high a number results in overfitting;
+            too low a number results in underfitting.
+        filters: List, the number of features to learn at each depth.
+        kernels: List, the kernel size at each depth.
+        strides: List, the stride size at each depth.
+
+    Returns uncompiled encoder, decoder, and autoencoder models.
+    """
+    assert len(filters) == len(kernels) == len(strides)
+    inputs = layers.Input(shape=(width, height, channels,), name='raw_image_data')
+    x = inputs
+
+    for i, filt in enumerate(filters):
+        x = layers.Conv2D(filt, kernels[i], padding='same', activation='relu', strides=strides[i])(x)
+
+    shape = K.int_shape(x)
+
+    x = layers.Flatten()(x)
+    x = layers.Dense(units=units, activation='relu')(x)
+
+    encoder = Model(inputs, x, name='latent_encoding')
+
+    latent_inputs = layers.Input(shape=(units,), name='decoder')
+    x = layers.Dense(units=shape[1] * shape[2] * shape[3], activation=None)(latent_inputs)
+    x = layers.Reshape(target_shape=(shape[1], shape[2], shape[3]))(x)
+
+    for i, filt in enumerate(filters[::-1]):
+        x = layers.Conv2DTranspose(filt, kernels[i], padding='same', activation='relu', strides=strides[i])(x)
+
+    outputs = layers.Conv2DTranspose(channels, (3, 3), padding='same', activation='sigmoid')(x)
+
+    decoder = Model(latent_inputs, outputs, name='reconstructed_data')
+
+    autoencoder = Model(inputs, decoder(encoder(inputs)), name='autoencoder')
+
+    return encoder, decoder, autoencoder
