@@ -5,6 +5,7 @@
 def ${1:create_autoencoder}(width,
         height,
         channels,
+        output_channels=None,
         units=16,
         filters=[32, 64],
         kernels=[3, 3],
@@ -14,7 +15,8 @@ def ${1:create_autoencoder}(width,
     Arguments:
         width: Integer, the image width.
         height: Integer, the image height.
-        channels: Integer, the color depth in bytes.
+        channels: Integer, the color depth of the input images.
+		output_channels: Integer, the color depth of the decoded image.
         units: Integer, the final number of features to learn in the
             latent representation.  Too high a number results in overfitting;
             too low a number results in underfitting.
@@ -22,9 +24,15 @@ def ${1:create_autoencoder}(width,
         kernels: List, the kernel size at each depth.
         strides: List, the stride size at each depth.
 
+    Use tfm/ael to create the internal convolutional layers.
+
     Returns uncompiled encoder, decoder, and autoencoder models.
     """
     assert len(filters) == len(kernels) == len(strides)
+
+    if output_channels is None:
+        output_channels = channels
+
     inputs = layers.Input(shape=(width, height, channels,), name='raw_image_data')
     x = inputs
 
@@ -45,7 +53,7 @@ def ${1:create_autoencoder}(width,
     for i, filt in enumerate(filters[::-1]):
         x = layers.Conv2DTranspose(filt, kernels[i], padding='same', activation='relu', strides=strides[i])(x)
 
-    outputs = layers.Conv2DTranspose(channels, (3, 3), padding='same', activation='sigmoid')(x)
+    outputs = layers.Conv2DTranspose(output_channels, (3, 3), padding='same', activation='sigmoid')(x)
 
     decoder = Model(latent_inputs, outputs, name='reconstructed_data')
 
