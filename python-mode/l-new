@@ -1,0 +1,26 @@
+# name: TF New Custom Layer
+# key: l/new
+# --
+
+class ${1:CustomLayer}(layers.Layer):
+    """$2 layer.
+
+	   Arguments:
+	     $3
+    """
+
+    def __init__(self,
+	             $4
+	             **kwargs):
+        super($1, self).__init__(**kwargs)
+        $5
+
+    def call(self, inputs):
+	    $6
+
+        return $7
+
+    def get_config(self):
+	    config = {$8}
+
+		return config
