@@ -1,0 +1,21 @@
+# name: TF New Custom Layer
+# key: tfm/new
+# --
+
+class ${1:CustomModel}(tf.keras.Model):
+    """$2 model.
+
+	   Arguments:
+	     $3
+    """
+
+    def __init__(self,
+	             $4
+	             **kwargs):
+        super($1, self).__init__(**kwargs)
+        $5
+
+    def call(self, inputs):
+	    $6
+
+        return $7
