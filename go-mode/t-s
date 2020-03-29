@@ -1,0 +1,7 @@
+# name: Specify block for Ginkgo tests
+# key: t/s
+# --
+
+Specify("$1", func() {
+    $0
+})

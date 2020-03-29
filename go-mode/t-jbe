@@ -1,0 +1,7 @@
+# name: JustBeforeEach block for Ginkgo tests
+# key: t/jbe
+# --
+
+JustBeforeEach("$1", func() {
+    $0
+})

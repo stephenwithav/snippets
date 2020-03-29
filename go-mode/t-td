@@ -1,0 +1,5 @@
+# name: CurrentGinkgoTestDescription block for Ginkgo tests
+# key: t/td
+# --
+
+CurrentGinkgoTestDescription()

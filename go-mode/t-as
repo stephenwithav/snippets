@@ -1,0 +1,7 @@
+# name: AfterSuite block for Ginkgo tests
+# key: t/as
+# --
+
+AfterSuite("$1", func() {
+    $0
+})

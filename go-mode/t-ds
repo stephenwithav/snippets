@@ -1,0 +1,7 @@
+# name: Describe block for Ginkgo tests
+# key: t/ds
+# --
+
+Describe("$1", func() {
+    $0
+})

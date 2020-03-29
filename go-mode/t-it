@@ -1,0 +1,7 @@
+# name: It block for Ginkgo tests
+# key: t/it
+# --
+
+It("$1", func() {
+    $0
+})

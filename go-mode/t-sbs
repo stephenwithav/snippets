@@ -1,0 +1,9 @@
+# name: SynchronizedBeforeSuite block for Ginkgo tests
+# key: t/sbs
+# --
+
+SynchronizedBeforeSuite(func() {
+    $1
+}, func() {
+    $2
+})

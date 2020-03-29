@@ -1,0 +1,5 @@
+# name: Expect().To block for Ginkgo tests
+# key: t/et
+# --
+
+Expect($1).To($2)

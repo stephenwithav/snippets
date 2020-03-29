@@ -1,0 +1,7 @@
+# name: AfterEach block for Ginkgo tests
+# key: t/ae
+# --
+
+AfterEach("$1", func() {
+    $0
+})

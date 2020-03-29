@@ -1,0 +1,7 @@
+# name: BeforeEach block for Ginkgo tests
+# key: t/be
+# --
+
+BeforeEach("$1", func() {
+    $0
+})

@@ -1,0 +1,5 @@
+# name: Expect().NotTo block for Ginkgo tests
+# key: t/ent
+# --
+
+Expect($1).NotTo($2)

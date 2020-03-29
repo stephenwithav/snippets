@@ -1,0 +1,9 @@
+# name: SynchronizedAfterSuite block for Ginkgo tests
+# key: t/sas
+# --
+
+SynchronizedAfterSuite(func() {
+    $1
+}, func() {
+    $2
+})

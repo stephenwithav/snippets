@@ -1,0 +1,7 @@
+# name: JustAfterEach block for Ginkgo tests
+# key: t/jae
+# --
+
+JustAfterEach("$1", func() {
+    $0
+})

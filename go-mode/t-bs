@@ -1,0 +1,7 @@
+# name: BeforeSuite block for Ginkgo tests
+# key: t/bs
+# --
+
+BeforeSuite("$1", func() {
+    $0
+})

@@ -1,0 +1,12 @@
+# name: Preamble code for Ginkgo tests
+# key: t/pre
+# --
+
+package $1_test
+
+import (
+    . "github.com/onsi/ginkgo"
+    . "github.com/onsi/gomega"
+)
+
+var _ = $2
