@@ -1,0 +1,18 @@
+# name: Golang Dockerfile
+# key: f/go
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region nil))
+# --
+
+FROM golang:${1:1.14.1-buster} AS ${2:builder}
+WORKDIR /app
+COPY . .
+RUN go mod download && go build -o app .
+
+FROM ${3:ubuntu:bionic}
+WORKDIR /app
+EXPOSE ${4:80}
+COPY --from=$2 /app/app .
+ENTRYPOINT ["/app/app"]
+CMD ["-h"]
+
+$0
